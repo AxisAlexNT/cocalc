@@ -41,6 +41,7 @@ import {
 } from "./base";
 import getLogger from "@cocalc/backend/logger";
 import { getUid } from "@cocalc/backend/misc";
+import { exec as exec0, spawn } from "child_process";
 
 const winston = getLogger("project-control:multi-user");
 
@@ -104,8 +105,13 @@ class Project extends BaseProject {
 
       winston.debug(`start ${this.project_id}: env = ${JSON.stringify(env)}`);
 
+      await exec(
+        `/bin/bash -c "if [[ ! -d '${HOME}/venv_${this.project_id}' ]]; then { cd '${HOME}' ; python3 -m venv venv_${this.project_id} ; source ${HOME}/venv_${this.project_id}/bin/activate; pip3 install -I venv-kernel; venv-kernel install --name 'Project ${this.project_id}'; }; fi;"`,
+        true
+      );
+
       // Setup files
-      await setupDataPath(HOME, this.uid);
+      await setupDataPath(HOME, this.uid);      
 
       // Fork and launch project server daemon
       await launchProjectDaemon(env, this.uid);
