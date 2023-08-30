@@ -167,6 +167,10 @@ export async function createUser(project_id: string): Promise<void> {
     `echo "${username} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers`,
     true
   );
+  await exec(
+    `chown -R ${uid}:${uid} ${homePath(project_id)}`,
+    true
+  );
 }
 
 export async function stopProjectProcesses(project_id: string): Promise<void> {
