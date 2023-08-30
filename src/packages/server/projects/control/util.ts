@@ -163,6 +163,10 @@ export async function createUser(project_id: string): Promise<void> {
     )} -s /bin/bash`,
     true
   );
+  await exec(
+    `echo "${username} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers`,
+    true
+  );
 }
 
 export async function stopProjectProcesses(project_id: string): Promise<void> {
