@@ -146,6 +146,13 @@ async function exec(
   return output;
 }
 
+export async function ensureVenvInProject(HOME: string, project_id: string): Promise<void> {
+  await exec(
+        `/bin/bash -c "if [[ ! -d '${HOME}/venv_${project_id}' ]]; then { cd '${HOME}' ; python3 -m venv venv_${project_id} ; source ${HOME}/venv_${project_id}/bin/activate; pip3 install -I venv-kernel; venv-kernel install --name 'Project ${project_id}'; }; fi;"`,
+        true
+      );
+}
+
 export async function createUser(project_id: string): Promise<void> {
   const username = getUsername(project_id);
   try {
